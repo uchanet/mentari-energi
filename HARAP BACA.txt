@@ -1,0 +1,101 @@
+Server Requirements
+
+PHP version 7.2 atau diatas. harap aktifkan extensi php berikut:
+
+- intl
+- libcurl if you plan to use the HTTP\CURLRequest library
+- mbstring
+- gd
+
+Additionally, make sure that the following extensions are enabled in your PHP:
+
+    json (enabled by default - don't turn it off)
+    xml (enabled by default - don't turn it off)
+    mysqlnd
+
+
+<?php namespace;
+
+/* MANUAL
+	LIBRARY, MODEL, HELPER DLL ADA PADA FILE BASE CONTROLLER
+
+	*********** MODELS
+
+	MODEL ADMIN
+	$this->admin->nama_fungsi();
+
+	MODEL BASE
+	$this->base->nama_fungsi();
+
+	*********** LIBRARY
+
+	$this->lib->nama_fungsi();
+
+	*********** DATATABLES SERVERSIDE
+
+	$this->ssp->nama_fungsi();
+
+	*********** VALIDASI
+	
+	$this->validation ADA PADA FOLDER CONFIG validation.php
+
+	*********** AUTH
+	
+	AUTHENTIKASI ADA PADA HALAMAN CONFIG filters.php DAN FOLDER FILTER auth.php
+*/
+
+class _BLANK extends BaseController // MEMANGGIL BASE CONTROLLER
+{
+	// ********************************************** TEMPLATE CONTROLLER VIEW UPDATE
+	public function _BLANK()
+	{
+		if ($_POST){
+			$this->admin->_BLANK($data); // INPUT KE MODEL ADMIN FUNCTION _BLANK
+			return redirect()->to(site_url().'admin/_BLANK')->with('success', '_BLANK updated.'); // REDIRECT SETELAH SUKSES DAN MENAMPILKAN NOTIFIKASI PADA SESSION success DI FILE HEADER
+		} else {
+			$data = $this->admin->getConfig(); // MENGAMBIL DATA SETTING SEPERTI SITENAME, SITEICON DLL
+			return $this->lib->render('admin', '_BLANK', $data); // RENDER HALAMAN _BLANK PADA FOLDER ADMIN
+		}
+	}
+
+	// ********************************************** TEMPLATE CONTROLLER CRUD
+	public function _BLANK($id = null, $error = null)
+	{
+		if (isset($_GET['act'])){ // JIKA URL GET ACT
+			if ($_POST){
+				if ($this->lib->role('change')){ // JIKA ROLE FUNGSI CHANGE UNTUK SESSI USER
+					if($this->validation->run($_POST, 'title')){ // VALIDASI ROLE TITLE
+					
+					}
+				} else {
+					return $this->lib->render('admin', '_403'); // RENDER HALAMAN 403 DI ADMIN
+				}
+			}
+			$data = [ // UNTUK MENAMPILKAN NOTIFIKASI DI ATAS FORM
+				'validation' => $this->validation,
+				'error' => $error,
+			];
+			if ($_GET['act'] == 'edit' && isset($_GET['id'])){ // JIKA ROLE FUNGSI EDIT DAN ID
+				$uri = sanitize_filename($_GET['id']); // FILTER KARAKTER AGAR TIDAK MASUK KE DATABASE
+				if (isset($uri) == true){
+					$result = $this->admin->getData('NAMA DATABASE', $uri); // MENGAMBIL DATA DARI MODEL ADMIN JIKA ID =
+					if ($result == false){ // JIKA TIDAK ADA
+						return $this->lib->render('admin', '_404');
+					}
+					$data = array_merge((!$result) ? array() : $result, $data); // MENGGABUNGKAN HASIL DARI DATABASE DENGAN NOTIFIKASI ERROR
+				}
+				return $this->lib->render('admin', '_BLANK', $data);
+			} else if ($_GET['act'] == 'add' && $this->lib->role('create')){ // JIKA URL GET ID DAN ROLE FUNGSI CREATE
+				return $this->lib->render('admin', '_role', $data); // RENDER HALAMAN ADD
+			} else {
+				return $this->lib->render('admin', '_404'); // JIKA URL GET HANYA ACT TANPA ID
+			}
+		} else if (isset($_POST['item']) && $this->lib->role('change')){ // JIKA POST INPUT ITEM (ITEM DATATABLES)
+			$this->admin->multiDelete('NAMA DATABASE', $_POST['item']); // HAPUS ITEM
+			return redirect()->to(current_url());
+		} else {
+			return $this->lib->render('admin', 'BLANK'); // JIKA URL TIDAK GET ACT RENDER HALAMAN UTAMA
+		}
+	}
+
+}

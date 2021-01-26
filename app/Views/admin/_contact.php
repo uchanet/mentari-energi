@@ -1,0 +1,170 @@
+					<script src="<?=site_url()?>assets/plugins/tinymce/tinymce.min.js"></script>
+					<script src="<?=site_url()?>assets/plugins/fancybox/jquery.fancybox.min.js"></script>
+					<link rel="stylesheet" href="<?=site_url()?>assets/plugins/fancybox/jquery.fancybox.min.css">
+					<link rel="stylesheet" href="<?=site_url()?>assets/admin/css/forms/switches.css">
+
+					<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
+						<div class="widget">
+							<div class="widget-heading d-flex justify-content-between">
+								<h5 class=""><?=$pagetitle?></h5>
+							</div>
+
+							<div class="widget-content">
+								<form method="post" enctype="multipart/form-data">
+								<?php
+									if ($validation->getErrors()){
+								?>
+									<div class="alert alert-warning alert-dismissible fade show" role="alert">
+										<strong>Error!</strong> <?=$validation->listErrors()?>
+										<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+											<span aria-hidden="true">&times;</span>
+										</button>
+									</div>
+								<?php
+									}
+									if (!empty($error)){
+								?>
+									<div class="alert alert-warning alert-dismissible fade show" role="alert">
+										<strong>Error!</strong><ul><li> <?=$error;?></li></ul>
+										<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+											<span aria-hidden="true">&times;</span>
+										</button>
+									</div>
+								<?php
+									}
+								?>
+									<input type="hidden" name="id" value="<?=((!empty($id)) ? $id : NULL);?>"/>
+									<div class="form-row mb-4">
+										<div class="form-group col-md-6">
+											<label for="subject">Subject</label>
+											<input type="text" class="form-control" name="subject" placeholder="Subject" value="RE: <?=((!empty($_POST['subject'])) ? $_POST['subject'] : ((!empty($subject)) ? $subject : NULL));?>" required>
+										</div>
+										<div class="form-group col-md-6">
+											<label for="email">Mail To</label>
+											<input type="text" class="form-control" name="email" placeholder="Mail To" value="<?=((!empty($_POST['email'])) ? $_POST['email'] : ((!empty($email)) ? $email : NULL));?>" readonly>
+										</div>
+										<div class="form-group col-md-12">
+											<label for="message">Message</label>
+											<textarea name="message"><?=((!empty($_POST['message'])) ? $_POST['message'] : NULL);?></textarea>
+										</div>
+										<div class="col-md-6">
+											<div class="form-group">
+												<label for="attachment">Attachment</label>
+												<div class="input-group">
+													<input class="form-control" name="attachment" id="attachment" type="text" placeholder="Browse file..." value="<?=((!empty($_POST['attachment'])) ? $_POST['attachment'] : NULL);?>">
+													<div class="input-group-append">
+														<button data-fancybox data-type="iframe" data-src="<?=site_url()?>assets/plugins/filemanager/dialog.php?type=2&field_id=attachment'&fldr=" class="iframe-btn input-group-text" type="button">Select</button>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="form-group col-md-6">
+											<label for="cc">CC</label>
+											<input type="text" class="form-control" name="cc" placeholder="CC To" value="<?=((!empty($_POST['cc'])) ? $_POST['cc'] : NULL);?>">
+										</div>
+									</div>
+									<button type="submit" class="btn btn-primary">Send</button> <a href='<?=current_url()?>' class="btn btn-outline-danger float-right">Cancel</a>
+								</form>
+							</div>
+						</div>
+					</div>
+
+					<script type="text/javascript">
+						tinymce.init({
+							convert_urls : false,
+							selector: "textarea",
+							height: 600,
+							content_style: 'p, ul, h1, h2, h3, h4, h5, h6 {margin: 0px;padding: 0px;} ul {margin-left: 2.5em}',
+							plugins: ["advlist autolink link image lists charmap print preview hr anchor pagebreak", "searchreplace wordcount visualblocks visualchars insertdatetime media nonbreaking", "table contextmenu directionality emoticons paste textcolor responsivefilemanager code"],
+							toolbar1: "undo redo | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | styleselect",
+							toolbar2: "| responsivefilemanager | link unlink anchor | image media | forecolor backcolor  | print preview code ",
+							image_advtab: true,
+							external_filemanager_path: "<?=site_url()?>assets/plugins/filemanager/",
+							filemanager_title: "Filemanager",
+							external_plugins: {
+								"filemanager": "<?=site_url()?>assets/plugins/filemanager/plugin.min.js"
+							}
+						})
+						var exit = false;
+						$("form").submit(function(){
+							exit = true;
+						})
+						$(window).on("beforeunload", function() {
+							if (!exit) {
+								return "Are you sure? You didn't finish the form!";
+							}
+						})
+						$(document).ready(function($) {
+							$('input[name="title"').on('input', function() {
+								var permalink;
+								permalink = $.trim($(this).val());
+								permalink = permalink.replace(/\s+/g,' ');
+								$('input[name="url"').val(permalink.toLowerCase());
+								$('input[name="url"').val($('input[name="url"').val().replace(/\W/g, ' '));
+								$('input[name="url"').val($.trim($('input[name="url"').val()));
+								$('input[name="url"').val($('input[name="url"').val().replace(/\s+/g, '-'));
+								var gappermalink = $('input[name="url"').val();
+							})
+
+							$('input[name="url"').on('input', function() {
+								var permalink;
+								permalink = $(this).val();
+								permalink = permalink.replace(/\s+/g,' ');
+								$(this).val(permalink.toLowerCase());
+								$(this).val($(this).val().replace(/\W/g, ' '));
+								$(this).val($(this).val().replace(/\s+/g, '-'));
+								var gappermalink = $(this).val();
+							})
+
+							$("[data-fancybox]").fancybox({
+								iframe : {
+									css : {
+										width : '100%',
+										height : '100%',
+									}
+								}
+							});
+
+							function OnMessage(e) {
+								var event = e.originalEvent;
+								if (event.data.sender === 'responsivefilemanager') {
+									if (event.data.field_id) {
+										var fieldID = event.data.field_id;
+										var url = event.data.url;
+										$('#' + fieldID).val(url).trigger('change');
+										$.fancybox.close();
+										$(window).off('message', OnMessage);
+									}
+								}
+							}
+
+							$('.iframe-btn').on('click', function() {
+								$(window).on('message', OnMessage);
+							})
+
+							$('#download-button').on('click', function() {
+								ga('send', 'event', 'button', 'click', 'download-buttons');
+							})
+
+							$('.toggle').click(function() {
+								var _this = $(this);
+								$('#' + _this.data('ref')).toggle(200);
+								var i = _this.find('i');
+								if (i.hasClass('icon-plus')) {
+									i.removeClass('icon-plus');
+									i.addClass('icon-minus');
+								} else {
+									i.removeClass('icon-minus');
+									i.addClass('icon-plus');
+								}
+							})
+						})
+
+						function open_popup(url) {
+							var w = 880;
+							var h = 570;
+							var l = Math.floor((screen.width - w) / 2);
+							var t = Math.floor((screen.height - h) / 2);
+							var win = window.open(url, 'ResponsiveFilemanager', "scrollbars=1,width=" + w + ",height=" + h + ",top=" + t + ",left=" + l);
+						}
+					</script>

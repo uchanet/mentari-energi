@@ -1,0 +1,21 @@
+.form-row > .col, .form-row > [class*="col-"] {
+    padding-right: 1em;
+    padding-left: 1em;
+}
+.dropdown-toggle i {
+	color: #506690;
+	margin-right: 10px;
+	vertical-align: middle;
+	width: 20px;
+	height: 20px;
+	font-size: 18px;
+	fill: rgba(0, 23, 55, 0.08);
+}
+.alert{
+	position:fixed;
+	z-index:1400;
+	top:5%;
+	right:3%;
+	margin:0px auto;
+	display:none;
+}
