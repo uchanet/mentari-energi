@@ -25,7 +25,7 @@
 			?>
 				<div class="col-md-3 col-sm-6 " style=" border: 1px solid;border-radius: 1em; margin: 15px;">
 					<div class="team-box-2">
-						<img alt="" class="circled-border" src="<?= site_url() ?>assets/images/profile/<?= $row->picture ?>">
+						<img alt="" class="circled-border"  src="<?= site_url() ?>assets/images/profile/<?= $row->picture ?>">
 						<div class="team-box-2-info">
 							<h4><?= $row->name ?></h4>
 							<h6><?= $row->bio ?></h6>

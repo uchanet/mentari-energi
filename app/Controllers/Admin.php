@@ -48,7 +48,7 @@ class Admin extends BaseController
 					if ($logo->isValid() && !$logo->hasMoved()) {
 						$image = \Config\Services::image()
 							->withFile($logo)
-							->resize(130, 120)
+							->resize(160, 120)
 							->save();
 						if (file_exists('assets/images/sitelogo.png')) {
 							unlink('assets/images/sitelogo.png');

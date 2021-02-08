@@ -19,7 +19,7 @@
 		<div class="row ">
 			<div class="col-md-9 col-sm-12 col-12 ">
 				<div class="blog-list shadow p-3 mb-5 bg-white rounded">
-					<img alt="img" src="<?= site_url() ?>/assets/uploads/<?= $picture ?>" onerror="this.onerror=null;this.src='<?= site_url() ?>assets/images/blank.png'">
+					<img alt="img" width="100%" src="<?= site_url() ?>/assets/uploads/<?= $picture ?>" onerror="this.onerror=null;this.src='<?= site_url() ?>assets/images/blank.png' ">
 					<h4><a href="#"><?= $title ?></a></h4>
 					<ul class="blog-list-info">
 						<li><i class="ti-user"></i><span><?= $this->lib->getAuthor($author) ?></span></li>
